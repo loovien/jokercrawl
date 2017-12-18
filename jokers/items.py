@@ -9,6 +9,9 @@ import scrapy
 
 
 class JokersItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    id = scrapy.Field()
+    avatar = scrapy.Field()
+    nickname = scrapy.Field()
+    createdAt = scrapy.Field()
+    content = scrapy.Field()
+
