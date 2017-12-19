@@ -64,9 +64,13 @@ class JokersPipeline(object):
                          timestamp, timestamp, timestamp)
         spider.logger.info("sql: {}".format(sql))
         cursor = self.connection.cursor()
-        stat = cursor.execute(sql)
-        spider.logger.info("插入数据库: {}".format(stat))
-        cursor.close()
+        try:
+            stat = cursor.execute(sql)
+            spider.logger.info("插入数据库: {}".format(stat))
+            cursor.close()
+        except Exception as e:
+            spider.logger.error("插入数据错误: {}".format(e))
+            pass
         return item
 
     def close_spider(self, spider):
