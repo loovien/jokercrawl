@@ -1,33 +1,49 @@
 # -*- coding: utf-8 -*-
-# @author: luowen<bigpao.luo@gmail.com>
-# @desc: joker spider main class
-# @time: 2017-12-18 15:44
-
+# author: luowen<bigpao.luo@gmail.com>
+# time: 2017/12/19 21:28
+# desc:
+import json
 import scrapy
-import time
-from jokers.utils.apputils import *
+import datetime
 
 
-class JokerSpider(scrapy.Spider):
-    name = "joker"
+class JokersSpider(scrapy.Spider):
+    name = "test"
+    def start_requests(self):
+        crawl_url = 'http://neihanshequ.com/joke/?is_json=1&app_name=neihanshequ_web&max_time='
+        step = 1800 # 30 minute as page
 
-    start_urls = [
-        "http://neihanshequ.com/"
-    ]
+        now_date = datetime.datetime.now()
+        now_timestamp = now_date.timestamp()
+        lastweek_date = now_date - datetime.timedelta(weeks=1)
+        lastweek_timestamp = lastweek_date.timestamp()
+
+        def build_urls(timestamp):
+            return crawl_url + str(timestamp)
+        start_urls = list(map(build_urls, [i for i in range(int(lastweek_timestamp), int(now_timestamp), step)]))
+        request_list = []
+        for url in start_urls:
+            request_list.append(scrapy.Request(url=url))
+        return request_list
 
     def parse(self, response):
-        strip_char = "\n\t"
-        for item in response.css("ul#detail-list li .detail-wrapper"):
-            date_str = strip_value(item.css(".time::text").extract_first(), strip_char)
-            timestamp = time.time()
-            if date_str is not "":
-                timestamp = parse_strtime("2017-{}".format(date_str), "%Y-%m-%d %H:%M")
-            joker = {
-                "avatar": strip_value(item.css("a > img::attr(data-src)").extract_first(), strip_char),
-                "nickname": strip_value(item.css(".name::text").extract_first(), strip_char),
-                "createdAt": int(timestamp),
-                "content": strip_value(item.css("p::text").extract_first(), strip_char),
-                "id": strip_value(item.css(".options::attr(data-group-id)").extract_first(), strip_char),
-            }
-            self.logger.info("处理的信息", joker)
-            yield joker
+
+        json_resp = json.loads(response.body, encoding="utf-8")
+        joker_list = json_resp.get("data", {}).get("data")
+        if joker_list is None:
+            return
+
+        try:
+            for joker in joker_list:
+                item = {
+                    "id": joker.get("group", {}).get("id"),
+                    "nickname": joker.get("group", {}).get("user", {}).get("name"),
+                    "avatar": joker.get("group", {}).get("user", {}).get("avatar_url"),
+                    "title": joker.get("group", {}).get("text"),
+                    "content": joker.get("group", {}).get("content"),
+                    "createdAt": joker.get("group", {}).get("create_time")
+                }
+                self.logger.info("处理对象: {}".format(item))
+                yield item
+        except Exception as e:
+            self.logger.error("处理数据发生错误: %s" % e)

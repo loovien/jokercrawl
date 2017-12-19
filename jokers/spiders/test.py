@@ -3,8 +3,15 @@
 
 import MySQLdb
 import datetime
+import time
 import random
 from MySQLdb.cursors import DictCursor
+
+def str_test():
+    string = list("我是一个中国人")
+    print(string[0:4])
+    print("".join(string))
+
 
 def time_parse():
     now = datetime.datetime.now()
@@ -50,9 +57,29 @@ def fetch_mysql():
     print(list(result_set))
     cursor.close()
 
+def time_compute():
+
+    now = datetime.datetime.now()
+    now_timestamp = now.timestamp()
+    print(">>>> now timestamp")
+    print(now)
+    print(now_timestamp)
+    lastweek = now - datetime.timedelta(weeks=1)
+    lastweek_timestamp = lastweek.timestamp()
+    print(">>>>> last week timestamp")
+    print(lastweek)
+    print(lastweek_timestamp)
+
+
 
 if __name__ == '__main__':
+    # time_compute()
+    # str_test()
     # time_parse()
-    fetch_mysql()
+    # fetch_mysql()
     # connect_mysql()
     # rand_test()
+
+    l1 = [i for i in range(1, 100, 20)]
+    print(l1)
+
