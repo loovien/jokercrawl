@@ -8,7 +8,7 @@ import datetime
 
 
 class JokersSpider(scrapy.Spider):
-    name = "test"
+    name = "neihan"
     def start_requests(self):
         crawl_url = 'http://neihanshequ.com/joke/?is_json=1&app_name=neihanshequ_web&max_time='
         step = 1800 # 30 minute as page
@@ -36,7 +36,8 @@ class JokersSpider(scrapy.Spider):
         try:
             for joker in joker_list:
                 item = {
-                    "id": joker.get("group", {}).get("id"),
+                    "id": "{}_{}".format(self.name, joker.get("group", {}).get("id")),
+                    "uid": joker.get("group", {}).get("user", {}).get("user_id"),
                     "nickname": joker.get("group", {}).get("user", {}).get("name"),
                     "avatar": joker.get("group", {}).get("user", {}).get("avatar_url"),
                     "title": joker.get("group", {}).get("text"),

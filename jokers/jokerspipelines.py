@@ -53,7 +53,10 @@ class JokersPipeline(object):
         if item.get("content", None) is None:
             spider.logger.info("过滤内容为空item: {}".format(item))
             return
+        self.record_jokers(item, spider)
+        self.record_user(item, spider)
 
+    def record_jokers(self, item, spider):
         sectime = time.time()
         timestamp = int(sectime)
         content = list(item.get("content", ""))
@@ -61,16 +64,32 @@ class JokersPipeline(object):
               " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
         sql = sql.format(item.get("id", int(sectime * 1000)), 1, 0, "".join(content[0:60]), "".join(content), 1,
                          timestamp, timestamp, timestamp)
-        spider.logger.info("sql: {}".format(sql))
+        spider.logger.info("jokersql: {}".format(sql))
         cursor = self.connection.cursor()
         try:
             stat = cursor.execute(sql)
-            spider.logger.info("插入数据库: {}".format(stat))
+            spider.logger.info("插入数据表joker: {}".format(stat))
             cursor.close()
         except Exception as e:
-            spider.logger.error("插入数据错误: {}".format(e))
+            spider.logger.error("插入数据表joker错误: {}".format(e))
             pass
-        return item
+
+    def record_user(self, item, spider):
+        sectime = time.time()
+        timestamp = int(sectime)
+        sql = "INSERT INTO user (openId, uid, nickname, avatar, issave, createdAt, updatedAt)" \
+              " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}')"
+        sql = sql.format(item.get("id", int(sectime * 1000)), item.get("uid", 0), item.get("nickname"),
+                         item.get("avatar"), 1, timestamp, timestamp)
+        spider.logger.info("usersql: {}".format(sql))
+        cursor = self.connection.cursor()
+        try:
+            stat = cursor.execute(sql)
+            spider.logger.info("插入数据表user: {}".format(stat))
+            cursor.close()
+        except Exception as e:
+            spider.logger.error("插入数据表userr错误: {}".format(e))
+            pass
 
     def close_spider(self, spider):
         if self.connection is not None:
