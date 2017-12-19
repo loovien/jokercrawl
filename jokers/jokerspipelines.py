@@ -7,7 +7,6 @@
 
 import MySQLdb
 import time
-import random
 from MySQLdb.cursors import DictCursor
 
 
