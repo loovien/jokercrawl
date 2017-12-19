@@ -77,7 +77,7 @@ class JokersPipeline(object):
     def record_user(self, item, spider):
         sectime = time.time()
         timestamp = int(sectime)
-        sql = "INSERT INTO user (openId, uid, nickname, avatar, issave, createdAt, updatedAt)" \
+        sql = "INSERT INTO user (unionId, openId, nickname, avatar, issave, createdAt, updatedAt)" \
               " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}')"
         sql = sql.format(item.get("id", int(sectime * 1000)), item.get("uid", 0), item.get("nickname"),
                          item.get("avatar"), 1, timestamp, timestamp)

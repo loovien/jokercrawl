@@ -22,7 +22,7 @@ class JokersSpider(scrapy.Spider):
             return crawl_url + str(timestamp)
         start_urls = list(map(build_urls, [i for i in range(int(lastweek_timestamp), int(now_timestamp), step)]))
         request_list = []
-        for url in start_urls:
+        for url in start_urls[0:10]:
             request_list.append(scrapy.Request(url=url))
         return request_list
 
