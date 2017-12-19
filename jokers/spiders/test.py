@@ -3,8 +3,8 @@
 
 import MySQLdb
 import datetime
+import random
 from MySQLdb.cursors import DictCursor
-
 
 def time_parse():
     now = datetime.datetime.now()
@@ -16,17 +16,43 @@ def time_parse():
     print(">>>>> string to time:")
     print(new_time.timestamp())
 
+def connect_mysql(**kwargs):
+    options = {
+        "host": kwargs.pop("host", "localhost"),
+        "user": kwargs.pop("user", "root"),
+        "password": kwargs.pop("password", "111111"),
+        "database": kwargs.pop("database", "hahajok"),
+        "port": kwargs.pop("port", 3306),
+        "charset": kwargs.pop("charset", "utf8")
+    }
+    print(options)
+    conn = MySQLdb.Connect(options)
+    cursor = conn.cursor()
+    cursor.execute("select * from user")
+    result = cursor.fetchall()
+    print(result)
+
+def rand_test():
+    a = random.randint(1, 1000)
+    print(a)
+
+
+
 
 def fetch_mysql():
     conn = MySQLdb.Connect(host="localhost", user="root", password="111111", db="hahajok", port=3306,
-                           charset="utf8", cursorclass=DictCursor)
+                           charset="utf8", cursorclass=DictCursor, autocommit=True)
     cursor = conn.cursor()
-    cursor.execute("select * from user")
+    sql = "insert into joker (id, title, content) values (1111, 'xixix', 'hahahhahah')"
+    print(sql)
+    cursor.execute(sql)
     result_set = cursor.fetchall()
     print(list(result_set))
     cursor.close()
 
 
 if __name__ == '__main__':
-    #time_parse()
+    # time_parse()
     fetch_mysql()
+    # connect_mysql()
+    # rand_test()

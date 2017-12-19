@@ -14,6 +14,13 @@ BOT_NAME = 'jokers'
 SPIDER_MODULES = ['jokers.spiders']
 NEWSPIDER_MODULE = 'jokers.spiders'
 
+# MySQL connection information
+MYSQL_HOST = "127.0.0.1"
+MYSQL_USER = "root"
+MYSQL_PWD = "111111"
+MYSQL_DATABASE = "hahajok"
+MYSQL_PORT = 3306
+MYSQL_CHARSET = "utf8"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'jokers (+http://www.yourdomain.com)'
@@ -39,10 +46,10 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+   'Accept-Language': 'en',
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
@@ -64,9 +71,10 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'jokers.pipelines.JokersPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'jokers.jokerspipelines.JokersPipeline': 300,
+}
+
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
