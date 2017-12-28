@@ -22,13 +22,14 @@ class JokersSpider(scrapy.Spider):
             return crawl_url + str(timestamp)
         start_urls = list(map(build_urls, [i for i in range(int(lastweek_timestamp), int(now_timestamp), step)]))
         request_list = []
-        for url in start_urls[0:10]:
+        self.logger.info(request_list)
+        for url in start_urls:
             request_list.append(scrapy.Request(url=url))
         return request_list
 
     def parse(self, response):
 
-        json_resp = json.loads(response.body, encoding="utf-8")
+        json_resp = json.loads(response.body.decode("utf-8"), encoding="utf-8")
         joker_list = json_resp.get("data", {}).get("data")
         if joker_list is None:
             return
