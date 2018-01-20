@@ -8,6 +8,7 @@
 import MySQLdb
 import time
 from MySQLdb.cursors import DictCursor
+import random
 
 
 class JokersPipeline(object):
@@ -60,9 +61,11 @@ class JokersPipeline(object):
         sectime = time.time()
         timestamp = int(sectime)
         content = list(item.get("content", ""))
+        id = item.get("id", int(sectime * 1000))
+        uid = random.randint(1, 1000)
         sql = "INSERT INTO joker (uniqueId, uid, classId, title, content, status, createdAt, passedAt, updatedAt)" \
               " values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
-        sql = sql.format(item.get("id", int(sectime * 1000)), 1, 0, "".join(content[0:60]), "".join(content), 1,
+        sql = sql.format(id, uid, 1, "".join(content[0:40]), "".join(content), 1,
                          timestamp, timestamp, timestamp)
         spider.logger.info("jokersql: {}".format(sql))
         cursor = self.connection.cursor()
