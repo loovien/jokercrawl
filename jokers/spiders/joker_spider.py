@@ -15,7 +15,7 @@ class JokersSpider(scrapy.Spider):
 
         now_date = datetime.datetime.now()
         now_timestamp = now_date.timestamp()
-        lastweek_date = now_date - datetime.timedelta(weeks=1)
+        lastweek_date = now_date - datetime.timedelta(days=1)
         lastweek_timestamp = lastweek_date.timestamp()
 
         def build_urls(timestamp):
